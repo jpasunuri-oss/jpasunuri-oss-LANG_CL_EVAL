@@ -1,8 +1,12 @@
 import os
+from dotenv import load_dotenv
 
 from langchain.evaluation import load_evaluator, EvaluatorType
 from langchain_community.chat_models.huggingface import ChatHuggingFace
 from langchain_community.llms.huggingface_endpoint import HuggingFaceEndpoint
+
+# Load dot_env 
+load_dotenv()
 
 """
 This lab will explore using built-in evaluator criteria, creating custom criteria, and using evaluators.
@@ -15,10 +19,10 @@ Defining LLM, templates, chat_model, and prompt. No need to edit these.
 """
 llm = HuggingFaceEndpoint(
     endpoint_url=os.environ['LLM_ENDPOINT'],
+    huggingfacehub_api_token=os.environ['HF_TOKEN'],
     task="text2text-generation",
     model_kwargs={
-        "max_new_tokens": 200,
-        "huggingfacehub_api_token": os.environ['HF_TOKEN'],
+        "max_new_tokens": 200
     }
 )
 chat_model = ChatHuggingFace(llm=llm)
@@ -41,7 +45,7 @@ Your tasks for lab completion are below:
 
 # TODO: Write an input that will pass the built-in "depth" criteria.
 """In other words, write a question that gets an insightful or "deep" answer from the llm"""
-depth_criteria_passing_query = ""
+depth_criteria_passing_query = "What is called a fruit?"
 
 # This is a sample custom criteria that will evaluate whether a response contains spanish words.
 # Do not edit this, use it as a template for the task below
@@ -77,7 +81,7 @@ def custom_spanish_evaluator(query: str):
 
     # Initial response from LLM
     prediction = chat_model.invoke(textInput.format(userInput=query))
-
+    # 
     # Instantiating an evaluator and using it to evaluate the response based on the sample custom criteria
     evaluator = load_evaluator(EvaluatorType.CRITERIA, criteria=sample_custom_criteria, llm=chat_model)
     eval_result = evaluator.evaluate_strings(prediction=prediction, input=query)
@@ -90,10 +94,12 @@ def custom_mathematical_evaluator(query: str):
 
     # Initial response from LLM
     prediction = chat_model.invoke(textInput.format(userInput=query))
-
+    criteria = {
+        "Math": "Does the output contain numbers?"
+    }
     # TODO: instantiate an evaluator that uses your custom criteria, and evaluate the response
     """ Remember the examples of this in the methods above """
-    evaluator = "TODO"
+    evaluator = load_evaluator(EvaluatorType.CRITERIA, criteria=criteria, llm=chat_model)
     eval_result = evaluator.evaluate_strings(prediction=prediction, input=query)
 
     # Print results

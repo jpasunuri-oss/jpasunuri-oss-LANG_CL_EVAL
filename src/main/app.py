@@ -2,7 +2,7 @@
 This file contains some sample code that will run the methods found in lab.py.
 No need to edit this file to complete the lab, but it will be helpful to run it to check your work.
 """
-from src.main.lab import built_in_depth_evaluator, depth_criteria_passing_query, custom_spanish_evaluator, \
+from lab import built_in_depth_evaluator, depth_criteria_passing_query, custom_spanish_evaluator, \
     custom_mathematical_evaluator
 
 
